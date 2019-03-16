@@ -10,8 +10,8 @@ class Piece(Enum):
 
 
 class Board:
-    size = 3  # Count tiles out from the centre (ignoring the centre itself)
-    ran = range(-size, +size+1)
+    SIZE = 3  # Count tiles out from the centre (ignoring the centre itself)
+    RAN = range(-SIZE, +SIZE+1)
 
     @staticmethod
     def from_json(data):
@@ -28,7 +28,7 @@ class Board:
 
     def __init__(self, board=None):
         if board is None:
-            self.cells = [[Piece.EMPTY for _i in range(Board.size*2 + 1)] for _j in range(Board.size*2 + 1)]
+            self.cells = [[Piece.EMPTY for _i in range(Board.SIZE*2 + 1)] for _j in range(Board.SIZE*2 + 1)]
         else:
             self.cells = board.cells.deepcopy()
 
@@ -36,19 +36,19 @@ class Board:
         if type(item) != tuple or len(item) != 2:
             raise KeyError("Function requires 2-tuple")
 
-        if -item[0]-item[1] not in Board.ran:
+        if -item[0]-item[1] not in Board.RAN:
             raise IndexError("Location not on board")
 
-        return self.cells[item[0] + Board.size][item[1] + Board.size]
+        return self.cells[item[0] + Board.SIZE][item[1] + Board.SIZE]
 
     def __setitem__(self, item, value):
         if type(item) != tuple or len(item) != 2:
             raise KeyError("Function requires 2-tuple")
 
-        if -item[0]-item[1] not in Board.ran:
+        if -item[0]-item[1] not in Board.RAN:
             raise IndexError("Location not on board")
 
-        self.cells[item[0] + Board.size][item[1] + Board.size] = value
+        self.cells[item[0] + Board.SIZE][item[1] + Board.SIZE] = value
 
     def get_dict(self, full=False):
         if full:
@@ -58,7 +58,7 @@ class Board:
 
         board_dict = {}
 
-        for qr in [(q, r) for q in Board.ran for r in Board.ran if -q-r in Board.ran]:
+        for qr in [(q, r) for q in Board.RAN for r in Board.RAN if -q-r in Board.RAN]:
             if self[qr] != Piece.EMPTY:
                 board_dict[qr] = col_list[self[qr].value]
 
