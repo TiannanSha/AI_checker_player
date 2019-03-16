@@ -50,6 +50,13 @@ class Board:
 
         self.cells[item[0] + Board.SIZE][item[1] + Board.SIZE] = value
 
+    def apply(self, action):
+        # No safety checks!!!
+        if action.to_loc is not None:
+            self[action.to_loc] = self[action.from_loc]
+
+        self[(action.from_loc)] = Piece.EMPTY
+
     def get_dict(self, full=False):
         if full:
             col_list = ["", "RED", "GREEN", "BLUE", "BLOCK"]

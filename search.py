@@ -10,6 +10,7 @@ import json
 
 
 from board import *
+from action import *
 
 
 def main():
@@ -19,8 +20,15 @@ def main():
     # TODO: Search for and output winning sequence of moves
     # ...
 
+    ##### Just Testing Stuff
     board = Board.from_json(data)
     print_board(board.get_dict())
+    print()
+
+    action = Action((0, 1), (2, 1))
+    board.apply(action)
+    print_board(board.get_dict(), action)
+    #####
 
 
 def print_board(board_dict, message="", debug=False, **kwargs):
