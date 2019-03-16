@@ -1,5 +1,2 @@
 # don't track the content in this folder
 .idea/
-venv
-.idea
-__pycache__
