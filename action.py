@@ -1,3 +1,4 @@
+from board import *
 from enum import Enum
 
 
@@ -20,6 +21,18 @@ class Action:
             self.type = MoveType.MOVE
         else:
             self.type = MoveType.JUMP
+
+    def apply_to(self, board):
+        # Leaves the original board unmodified and returns a modified version after apply the action
+
+        new_board = Board(board)
+
+        if self.to_loc is not None:
+            new_board[self.to_loc] = new_board[self.from_loc]
+
+        new_board[self.from_loc] = Piece.EMPTY
+
+        return new_board
 
     def __str__(self):
         if self.type == MoveType.MOVE:

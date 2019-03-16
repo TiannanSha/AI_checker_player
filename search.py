@@ -26,7 +26,7 @@ def main():
     print()
 
     action = Action((0, 1), (2, 1))
-    board.apply(action)
+    board = action.apply_to(board)
     print_board(board.get_dict(), action)
     #####
 

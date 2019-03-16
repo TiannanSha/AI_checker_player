@@ -1,5 +1,5 @@
 from enum import Enum
-
+from copy import deepcopy
 
 class Piece(Enum):
     EMPTY = 0
@@ -30,7 +30,7 @@ class Board:
         if board is None:
             self.cells = [[Piece.EMPTY for _i in range(Board.SIZE*2 + 1)] for _j in range(Board.SIZE*2 + 1)]
         else:
-            self.cells = board.cells.deepcopy()
+            self.cells = deepcopy(board.cells)
 
     def __getitem__(self, item):
         if type(item) != tuple or len(item) != 2:
@@ -49,13 +49,6 @@ class Board:
             raise IndexError("Location not on board")
 
         self.cells[item[0] + Board.SIZE][item[1] + Board.SIZE] = value
-
-    def apply(self, action):
-        # No safety checks!!!
-        if action.to_loc is not None:
-            self[action.to_loc] = self[action.from_loc]
-
-        self[(action.from_loc)] = Piece.EMPTY
 
     def get_dict(self, full=False):
         if full:
