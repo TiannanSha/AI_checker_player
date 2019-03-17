@@ -15,13 +15,13 @@ class Action:
         home_cells = {Piece.RED: [(3, -3), (3, -2), (3, -1), (3, 0)],
                       Piece.GREEN: [(-3, 3), (-2, 3), (-1, 3), (0, 3)],
                       Piece.BLUE: [(-3, 0), (-2, -1), (-1, -2), (0, -3)]}[board.colour]
-        piece_locs = board.get_locations(board.colour)
+        piece_locations = board.get_locations(board.colour)
 
         actions = []
-        for piece in piece_locs:
+        for piece in piece_locations:
             # Exits
             if piece in home_cells:
-                actions += [Action(piece)]
+                actions.append(Action(piece))
 
             for d in dirs:
                 # Moves
@@ -29,7 +29,7 @@ class Action:
                 if not Board.on_board(pos):
                     continue
                 if board[pos] == Piece.EMPTY:
-                    actions += [Action(piece, pos)]
+                    actions.append(Action(piece, pos))
                     continue
 
                 # Jumps
@@ -37,7 +37,7 @@ class Action:
                 if not Board.on_board(pos):
                     continue
                 if board[pos] == Piece.EMPTY:
-                    actions += [Action(piece, pos)]
+                    actions.append(Action(piece, pos))
                     continue
 
         return actions
@@ -53,6 +53,14 @@ class Action:
         else:
             self.type = MoveType.JUMP
 
+    def __str__(self):
+        if self.type == MoveType.MOVE:
+            return "MOVE from {} to {}.".format(self.from_loc, self.to_loc)
+        elif self.type == MoveType.JUMP:
+            return "JUMP from {} to {}.".format(self.from_loc, self.to_loc)
+        else:
+            return "EXIT from {}.".format(self.from_loc)
+
     def apply_to(self, board):
         # Leaves the original board unmodified and returns a modified version after applying the action
         new_board = Board(board)
@@ -63,11 +71,3 @@ class Action:
         new_board[self.from_loc] = Piece.EMPTY
 
         return new_board
-
-    def __str__(self):
-        if self.type == MoveType.MOVE:
-            return "MOVE from {} to {}.".format(self.from_loc, self.to_loc)
-        elif self.type == MoveType.JUMP:
-            return "JUMP from {} to {}.".format(self.from_loc, self.to_loc)
-        else:
-            return "EXIT from {}.".format(self.from_loc)

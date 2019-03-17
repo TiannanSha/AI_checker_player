@@ -27,6 +27,13 @@ class Board:
 
         return board
 
+    @staticmethod
+    def on_board(loc):
+        if type(loc) != tuple or len(loc) != 2:
+            raise KeyError("Function requires 2-tuple")
+
+        return loc[0] in Board.RAN and loc[1] in Board.RAN and -loc[0]-loc[1] in Board.RAN
+
     def __init__(self, board=None):
         if board is None:
             self.cells = [[Piece.EMPTY for _i in range(Board.SIZE*2 + 1)] for _j in range(Board.SIZE*2 + 1)]
@@ -45,21 +52,8 @@ class Board:
 
         self.cells[item[0] + Board.SIZE][item[1] + Board.SIZE] = value
 
-    @staticmethod
-    def on_board(loc):
-        if type(loc) != tuple or len(loc) != 2:
-            raise KeyError("Function requires 2-tuple")
-
-        return loc[0] in Board.RAN and loc[1] in Board.RAN and -loc[0]-loc[1] in Board.RAN
-
     def get_locations(self, ptype):
-        piece_locs = []
-
-        for qr in [(q, r) for q in Board.RAN for r in Board.RAN if -q-r in Board.RAN]:
-            if self[qr] == ptype:
-                piece_locs += [qr]
-
-        return piece_locs
+        return [(q, r) for q in Board.RAN for r in Board.RAN if -q-r in Board.RAN and self[(q, r)] == ptype]
 
     def print(self, message="", debug=False, **kwargs):
         """
