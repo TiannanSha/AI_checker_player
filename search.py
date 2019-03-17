@@ -9,24 +9,29 @@ import sys
 import json
 
 
-from action import *
+from IDS import *
 
 
 def main():
     with open(sys.argv[1]) as file:
         data = json.load(file)
 
-    # TODO: Search for and output winning sequence of moves
-    # ...
-
-    # $$Just Testing Stuff$$
     board = Board.from_json(data)
-    board.print()
 
-    actions = Action.get_action_list(board)
-    for action in actions:
+    board.print("Starting Config")
+
+    ids = IterDepthSearch(board, heuristic)
+    path = ids.start()
+
+    for action in reversed(path):
         print(action)
-    # $$$$$
+
+
+def heuristic(board):
+    # TODO: greatly improve the heuristic
+    if board.get_locations(board.colour):
+        return 1
+    return 0
 
 
 # when this module is executed, run the `main` function:

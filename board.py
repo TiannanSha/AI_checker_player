@@ -39,6 +39,7 @@ class Board:
             self.cells = [[Piece.EMPTY for _i in range(Board.SIZE*2 + 1)] for _j in range(Board.SIZE*2 + 1)]
         else:
             self.cells = deepcopy(board.cells)
+            self.colour = board.colour
 
     def __getitem__(self, item):
         if not Board.on_board(item):
