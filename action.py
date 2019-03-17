@@ -11,9 +11,34 @@ class Action:
 
     @staticmethod
     def get_action_list(board):
-        # TODO: implement function
+        dirs = [(1, -1), (1, 0), (0, 1), (-1, 1), (-1, 0), (0, -1)]
+        home_cells = {Piece.RED: [(3, -3), (3, -2), (3, -1), (3, 0)],
+                      Piece.GREEN: [(-3, 3), (-2, 3), (-1, 3), (0, 3)],
+                      Piece.BLUE: [(-3, 0), (-2, -1), (-1, -2), (0, -3)]}[board.colour]
+        piece_locs = board.get_locations(board.colour)
 
         actions = []
+        for piece in piece_locs:
+            # Exits
+            if piece in home_cells:
+                actions += [Action(piece)]
+
+            for d in dirs:
+                # Moves
+                pos = (piece[0] + d[0], piece[1] + d[1])
+                if not Board.on_board(pos):
+                    continue
+                if board[pos] == Piece.EMPTY:
+                    actions += [Action(piece, pos)]
+                    continue
+
+                # Jumps
+                pos = (piece[0] + 2*d[0], piece[1] + 2*d[1])
+                if not Board.on_board(pos):
+                    continue
+                if board[pos] == Piece.EMPTY:
+                    actions += [Action(piece, pos)]
+                    continue
 
         return actions
 
@@ -23,7 +48,7 @@ class Action:
 
         if to_loc is None:
             self.type = MoveType.EXIT
-        elif abs(from_loc[0] - to_loc[0]) == 1 or abs(from_loc[1] - to_loc[1]):
+        elif abs(from_loc[0] - to_loc[0]) == 1 or abs(from_loc[1] - to_loc[1]) == 1:
             self.type = MoveType.MOVE
         else:
             self.type = MoveType.JUMP
