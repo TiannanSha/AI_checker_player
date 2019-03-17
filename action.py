@@ -1,5 +1,4 @@
 from board import *
-from enum import Enum
 
 
 class MoveType(Enum):
@@ -10,10 +9,17 @@ class MoveType(Enum):
 
 class Action:
 
+    @staticmethod
+    def get_action_list(board):
+        # TODO: implement function
+
+        actions = []
+
+        return actions
+
     def __init__(self, from_loc, to_loc=None):
         self.from_loc = from_loc
         self.to_loc = to_loc
-        self.type = None
 
         if to_loc is None:
             self.type = MoveType.EXIT
@@ -23,8 +29,7 @@ class Action:
             self.type = MoveType.JUMP
 
     def apply_to(self, board):
-        # Leaves the original board unmodified and returns a modified version after apply the action
-
+        # Leaves the original board unmodified and returns a modified version after applying the action
         new_board = Board(board)
 
         if self.to_loc is not None:

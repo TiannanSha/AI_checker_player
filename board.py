@@ -1,6 +1,7 @@
 from enum import Enum
 from copy import deepcopy
 
+
 class Piece(Enum):
     EMPTY = 0
     RED = 1
@@ -17,7 +18,7 @@ class Board:
     def from_json(data):
         board = Board()
 
-        colour = {'red': Piece.RED, 'blue': Piece.BLUE, 'green': Piece.GREEN}[data['colour']]
+        colour = {'red': Piece.RED, 'green': Piece.GREEN, 'blue': Piece.BLUE}[data['colour']]
         for piece in data['pieces']:
             board[tuple(piece)] = colour
 
@@ -33,22 +34,23 @@ class Board:
             self.cells = deepcopy(board.cells)
 
     def __getitem__(self, item):
-        if type(item) != tuple or len(item) != 2:
-            raise KeyError("Function requires 2-tuple")
-
-        if -item[0]-item[1] not in Board.RAN:
+        if not Board.on_board(item):
             raise IndexError("Location not on board")
 
         return self.cells[item[0] + Board.SIZE][item[1] + Board.SIZE]
 
     def __setitem__(self, item, value):
-        if type(item) != tuple or len(item) != 2:
-            raise KeyError("Function requires 2-tuple")
-
-        if -item[0]-item[1] not in Board.RAN:
+        if not Board.on_board(item):
             raise IndexError("Location not on board")
 
         self.cells[item[0] + Board.SIZE][item[1] + Board.SIZE] = value
+
+    @staticmethod
+    def on_board(loc):
+        if type(loc) != tuple or len(loc) != 2:
+            raise KeyError("Function requires 2-tuple")
+
+        return loc[0] in Board.RAN and loc[1] in Board.RAN and -loc[0]-loc[1] in Board.RAN
 
     def get_dict(self, full=False):
         if full:
