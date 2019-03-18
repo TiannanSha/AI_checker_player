@@ -12,7 +12,7 @@ class Action:
     @staticmethod
     def get_action_list(board):
         dirs = [(1, -1), (1, 0), (0, 1), (-1, 1), (-1, 0), (0, -1)]
-        home_cells = {Piece.RED: [(3, -3), (3, -2), (3, -1), (3, 0)],
+        exit_cells = {Piece.RED: [(3, -3), (3, -2), (3, -1), (3, 0)],
                       Piece.GREEN: [(-3, 3), (-2, 3), (-1, 3), (0, 3)],
                       Piece.BLUE: [(-3, 0), (-2, -1), (-1, -2), (0, -3)]}[board.colour]
         piece_locations = board.get_locations(board.colour)
@@ -20,7 +20,7 @@ class Action:
         actions = []
         for piece in piece_locations:
             # Exits
-            if piece in home_cells:
+            if piece in exit_cells:
                 actions.append(Action(piece))
 
             for d in dirs:

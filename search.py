@@ -2,7 +2,7 @@
 COMP30024 Artificial Intelligence, Semester 1 2019
 Solution to Project Part A: Searching
 
-Authors: 
+Authors:
 """
 
 import sys
@@ -18,20 +18,11 @@ def main():
 
     board = Board.from_json(data)
 
-    board.print("Starting Config")
-
-    ids = IterDepthSearch(board, heuristic)
-    path = ids.start()
-
+    path = IterDepthSearch.search(board)
+    board.print("START")
     for action in reversed(path):
-        print(action)
-
-
-def heuristic(board):
-    # TODO: greatly improve the heuristic
-    if board.get_locations(board.colour):
-        return 1
-    return 0
+        board = action.apply_to(board)
+        board.print(action)
 
 
 # when this module is executed, run the `main` function:

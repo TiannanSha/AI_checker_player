@@ -128,10 +128,13 @@ class Board:
         # prepare the provided board contents as strings, formatted to size.
         cells = []
         for qr in [(q, r) for q in Board.RAN for r in Board.RAN if -q - r in Board.RAN]:
-            cell = str(col_list[self[qr].value]).center(5)
+            if type(self[qr]) == int:
+                cell = str(self[qr]).center(5)
+            else:
+                cell = str(col_list[self[qr].value]).center(5)
 
             cells.append(cell)
 
         # fill in the template to create the board drawing, then print!
-        board = template.replace("\t", "").format(message, *cells)
+        board = template.format(message, *cells)
         print(board, **kwargs)
