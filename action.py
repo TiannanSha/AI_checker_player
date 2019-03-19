@@ -10,35 +10,36 @@ class MoveType(Enum):
 class Action:
 
     @staticmethod
-    def get_action_list(board):
+    def actions(board, piece):
         actions = []
-        for piece in board.get_locations(board.colour):
-            # Exits
-            if piece in board.exit_cells:
-                actions.append(Action(piece))
 
-            for d in Field.DIRS:
-                # Moves
-                pos = (piece[0] + d[0], piece[1] + d[1])
-                if not Board.is_on(pos):
-                    continue
-                if board[pos] is None:
-                    actions.append(Action(piece, pos))
-                    continue
+        # Exits
+        if piece in board.exit_cells:
+            actions.append(Action(board, piece))
 
-                # Jumps
-                pos = (piece[0] + 2*d[0], piece[1] + 2*d[1])
-                if not Board.is_on(pos):
-                    continue
-                if board[pos] is None:
-                    actions.append(Action(piece, pos))
-                    continue
+        for d in Field.DIRS:
+            # Moves
+            pos = (piece[0] + d[0], piece[1] + d[1])
+            if not Board.is_on(pos):
+                continue
+            if board[pos] is None:
+                actions.append(Action(board, piece, pos))
+                continue
+
+            # Jumps
+            pos = (piece[0] + 2*d[0], piece[1] + 2*d[1])
+            if not Board.is_on(pos):
+                continue
+            if board[pos] is None:
+                actions.append(Action(board, piece, pos))
+                continue
 
         return actions
 
-    def __init__(self, from_loc, to_loc=None):
+    def __init__(self, board, from_loc, to_loc=None):
         self.from_loc = from_loc
         self.to_loc = to_loc
+        self.piece_index = board.pieces.index(self.from_loc)
 
         if to_loc is None:
             self.type = MoveType.EXIT
@@ -63,4 +64,15 @@ class Action:
             new_board[self.to_loc] = new_board[self.from_loc]
         new_board[self.from_loc] = None
 
+        new_board.pieces[self.piece_index] = self.to_loc
+
         return new_board
+
+    def jumped_index(self, board):
+        if self.type != MoveType.JUMP:
+            raise TypeError("Needs to be a JUMP action")
+
+        pos = ((self.from_loc[0] + self.to_loc[0])//2, (self.from_loc[1] + self.to_loc[1])//2)
+        if board[pos] is Piece.BLOCK:
+            return None
+        return board.pieces.index(pos)

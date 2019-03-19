@@ -26,4 +26,4 @@ class Heuristic:
         self.map.print("DEBUG [Heuristic Map]")
 
     def __call__(self, board):
-        return sum([self.map[loc] for loc in board.get_locations(board.colour)])
+        return sum([self.map[loc] for loc in board.get_locations() if loc is not None])
