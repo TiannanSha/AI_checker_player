@@ -19,10 +19,12 @@ def main():
     board = Board.from_json(data)
 
     path = IterDepthSearch.search(board)
+
     board.print("START")
     for action in reversed(path):
         board = action.apply_to(board)
-        board.print(action)
+        print(action)
+        board.print()
 
 
 # when this module is executed, run the `main` function:

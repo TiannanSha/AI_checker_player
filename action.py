@@ -11,32 +11,26 @@ class Action:
 
     @staticmethod
     def get_action_list(board):
-        dirs = [(1, -1), (1, 0), (0, 1), (-1, 1), (-1, 0), (0, -1)]
-        exit_cells = {Piece.RED: [(3, -3), (3, -2), (3, -1), (3, 0)],
-                      Piece.GREEN: [(-3, 3), (-2, 3), (-1, 3), (0, 3)],
-                      Piece.BLUE: [(-3, 0), (-2, -1), (-1, -2), (0, -3)]}[board.colour]
-        piece_locations = board.get_locations(board.colour)
-
         actions = []
-        for piece in piece_locations:
+        for piece in board.get_locations(board.colour):
             # Exits
-            if piece in exit_cells:
+            if piece in board.exit_cells:
                 actions.append(Action(piece))
 
-            for d in dirs:
+            for d in Field.DIRS:
                 # Moves
                 pos = (piece[0] + d[0], piece[1] + d[1])
-                if not Board.on_board(pos):
+                if not Board.is_on(pos):
                     continue
-                if board[pos] == Piece.EMPTY:
+                if board[pos] is None:
                     actions.append(Action(piece, pos))
                     continue
 
                 # Jumps
                 pos = (piece[0] + 2*d[0], piece[1] + 2*d[1])
-                if not Board.on_board(pos):
+                if not Board.is_on(pos):
                     continue
-                if board[pos] == Piece.EMPTY:
+                if board[pos] is None:
                     actions.append(Action(piece, pos))
                     continue
 
@@ -67,7 +61,6 @@ class Action:
 
         if self.to_loc is not None:
             new_board[self.to_loc] = new_board[self.from_loc]
-
-        new_board[self.from_loc] = Piece.EMPTY
+        new_board[self.from_loc] = None
 
         return new_board
