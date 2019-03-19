@@ -5,9 +5,19 @@ from heuristic import *
 class IterDepthSearch:
 
     @staticmethod
-    def search(root):
+    def start(root):
         ids = IterDepthSearch(root, Heuristic(root))
-        return ids.start()
+
+        ids.new_depth = ids.heuristic(root)
+
+        path = []
+        while not path:
+            ids.iter_depth = ids.new_depth
+            ids.new_depth = float("inf")
+            path = ids.recurse(root, 0)
+            print("# DEBUG [Current Depth: Expanded] ", ids.iter_depth, ":", ids.expanded)  # DEBUG
+
+        return path
 
     def __init__(self, root, heuristic):
         self.root = root
@@ -15,18 +25,6 @@ class IterDepthSearch:
         self.iter_depth = 0
         self.new_depth = float("inf")
         self.expanded = 0  # DEBUG
-
-    def start(self):
-        self.new_depth = self.heuristic(self.root)
-
-        path = []
-        while not path:
-            self.iter_depth = self.new_depth
-            self.new_depth = float("inf")
-            path = self.recurse(self.root, 0)
-            print("# DEBUG [Current Depth: Expanded] ", self.iter_depth, ":", self.expanded)  # DEBUG
-
-        return path
 
     def recurse(self, node, depth):
         self.expanded += 1  # DEBUG

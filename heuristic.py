@@ -21,8 +21,7 @@ class Heuristic:
                     pos = (top[0] + m*d[0], top[1] + m*d[1])
                     if not Field.is_on(pos):
                         continue
-                    if board[pos] != Piece.BLOCK:
-                        flood_list.append((pos, dist+1))
+                    flood_list.append((pos, dist+1))
 
         self.map.print("DEBUG [Heuristic Map]")
 

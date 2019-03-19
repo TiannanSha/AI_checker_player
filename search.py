@@ -18,7 +18,7 @@ def main():
 
     board = Board.from_json(data)
 
-    path = IterDepthSearch.search(board)
+    path = IterDepthSearch.start(board)
 
     board.print("START")
     for action in reversed(path):
