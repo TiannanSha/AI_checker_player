@@ -9,15 +9,20 @@ class IterDepthSearch:
         ids = IterDepthSearch(Heuristic(root))
 
         ids.iter_depth = ids.heuristic(root)
-        path = None
-        while path is None:
-            path = ids.recurse(root, 0, [0]*len(root.get_locations()))
+
+        found_path = False
+        while not found_path:
+            ids.path = [None] * ids.iter_depth
+            ids.branch = [None] * ids.iter_depth
+            found_path = ids.recurse(root, 0, [0]*len(root.get_locations()))
             print("# DEBUG [Current Depth: Expanded] ", ids.iter_depth, ":", ids.expanded)  # DEBUG
             ids.iter_depth += 1
 
-        return path
+        return ids.path
 
     def __init__(self, heuristic):
+        self.branch = []
+        self.path = []
         self.heuristic = heuristic
         self.iter_depth = 0
         self.expanded = 0  # DEBUG
@@ -27,10 +32,10 @@ class IterDepthSearch:
         h = self.heuristic(node)
 
         if h == 0:
-            return []
+            return True
 
         if h+depth > self.iter_depth:
-            return None
+            return False
 
         action_list = []
         for ind, piece in enumerate(node.get_locations()):
@@ -39,6 +44,12 @@ class IterDepthSearch:
 
         for action in action_list:
             child = action.apply_to(node)
+
+            if child.cells in [f.cells for f in self.branch[0:depth]]:
+                continue
+
+            self.path[depth] = action
+            self.branch[depth] = child
 
             next_states = piece_states.copy()
             for i in range(len(piece_states)):
@@ -50,7 +61,5 @@ class IterDepthSearch:
                 next_states[action.jumped_index(node)] = 0
                 next_states[action.piece_index] = 0
 
-            path = self.recurse(child, depth+1, next_states)
-            if path is not None:
-                path.append(action)
-                return path
+            if self.recurse(child, depth+1, next_states):
+                return True

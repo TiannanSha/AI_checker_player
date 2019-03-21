@@ -21,7 +21,7 @@ def main():
     path = IterDepthSearch.start(board)
 
     board.print("START")
-    for action in reversed(path):
+    for action in path:
         board = action.apply_to(board)
         print(action)
         board.print()
