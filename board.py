@@ -35,7 +35,7 @@ class Board(Field):
         if board is not None:
             self.colour = board.colour
             self.exit_cells = board.exit_cells
-            self.pieces = [p for p in board.pieces]
+            self.pieces = board.pieces.copy()
 
     def get_locations(self):
-        return [qr for qr in self.pieces]
+        return self.pieces.copy()
