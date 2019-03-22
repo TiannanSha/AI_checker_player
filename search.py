@@ -13,13 +13,17 @@ from IDS import *
 
 
 def main():
+    # Read JSON from file
     with open(sys.argv[1]) as file:
         data = json.load(file)
 
+    # Get board from JSON data
     board = Board.from_json(data)
 
-    path = IterDepthSearch.start(board)
+    # Find path
+    path = IterDeepSearch.start(board)
 
+    # Print FULL
     board.print("START")
     for action in path:
         board = action.apply_to(board)

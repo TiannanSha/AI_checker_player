@@ -41,12 +41,20 @@ class Action:
         self.to_loc = to_loc
         self.piece_index = board.pieces.index(self.from_loc)
 
+        # Find move type (Move, Jump, Exit)
         if to_loc is None:
             self.type = MoveType.EXIT
         elif abs(from_loc[0] - to_loc[0]) == 1 or abs(from_loc[1] - to_loc[1]) == 1:
             self.type = MoveType.MOVE
         else:
             self.type = MoveType.JUMP
+
+        # Find jumped piece if any (Blocks ignored)
+        self.jumped_index = None
+        if self.type == MoveType.JUMP:
+            pos = ((from_loc[0] + to_loc[0])//2, (from_loc[1] + to_loc[1])//2)
+            if board[pos] is not Piece.BLOCK:
+                self.jumped_index = board.pieces.index(pos)
 
     def __str__(self):
         if self.type == MoveType.MOVE:
@@ -67,12 +75,3 @@ class Action:
         new_board.pieces[self.piece_index] = self.to_loc
 
         return new_board
-
-    def jumped_index(self, board):
-        if self.type != MoveType.JUMP:
-            raise TypeError("Needs to be a JUMP action")
-
-        pos = ((self.from_loc[0] + self.to_loc[0])//2, (self.from_loc[1] + self.to_loc[1])//2)
-        if board[pos] is Piece.BLOCK:
-            return None
-        return board.pieces.index(pos)
