@@ -24,6 +24,9 @@ def main():
 
     # Find and print path
     path = IterDeepSearch.start(board, debug=DEBUG)
+
+    if DEBUG: board.print("START".center(43))
+
     for action in path:
         print(action)
 
