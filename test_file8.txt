@@ -1,5 +1,0 @@
-{
-	"colour": "",
-	"pieces": [],
-	"blocks": []
-}
