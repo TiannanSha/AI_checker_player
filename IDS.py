@@ -11,42 +11,58 @@ class States(Enum):
 class IterDeepSearch:
 
     @staticmethod
-    def start(root):
+    def start(root, debug=False):
+        # Init IDS
         ids = IterDeepSearch(Heuristic(root))
 
+        # Initial max depth set to heuristic of root
         ids.iter_depth = ids.heuristic(root)
 
         found_path = False
         while not found_path:
+            # Clean variables to store path (actions and states)
             ids.path = [None] * ids.iter_depth
             ids.branch = [None] * ids.iter_depth
+
+            # Clean variable used for branch culling
             piece_states = [States.STILL] * len(root.get_locations())
 
+            # Search
             found_path = ids.recurse(root, 0, piece_states)
 
-            print("# DEBUG [Current Depth: Expanded] ", ids.iter_depth, ":", ids.expanded)  # DEBUG
+            # DEBUG
+            if debug:
+                print("# DEBUG [Current Depth : Expanded | Generated] ",
+                        ids.iter_depth, ":", ids.expanded, "|", ids.generated)
+
+            # Increment max depth to search
             ids.iter_depth += 1
 
         return ids.path
 
     def __init__(self, heuristic):
-        self.branch = []
-        self.path = []
-        self.heuristic = heuristic
-        self.iter_depth = 0
+        self.path = []  # Store actions
+        self.branch = []  # Store states
+        self.heuristic = heuristic  # Heuristic function
+        self.iter_depth = 0  # Max depth to search
+        self.generated = 0  # DEBUG
         self.expanded = 0  # DEBUG
 
     def recurse(self, node, depth, piece_states):
-        self.expanded += 1  # DEBUG
-        h = self.heuristic(node)
+        self.generated += 1  # DEBUG
 
+        h = self.heuristic(node)
         # Goal Reached
         if h == 0:
             return True
-
         # This path can't reach goal at current depth
         if h+depth > self.iter_depth:
             return False
+
+        self.expanded += 1  # DEBUG
+
+        # Track boards gone through in this branch
+        self.branch[depth] = node
 
         # Get actions for all non stopped pieces
         action_list = []
@@ -62,9 +78,8 @@ class IterDeepSearch:
             if child.pieces in (f.pieces for f in self.branch[0:depth]):
                 continue
 
-            # Track current actions taken and the boards they generate
+            # Track current actions taken
             self.path[depth] = action
-            self.branch[depth] = child
 
             # Keep track of piece states
             next_states = []
@@ -82,5 +97,6 @@ class IterDeepSearch:
                 next_states[action.jumped_index] = States.STILL
                 next_states[action.piece_index] = States.STILL
 
+            # Recurse on child
             if self.recurse(child, depth+1, next_states):
                 return True

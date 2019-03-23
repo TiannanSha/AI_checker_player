@@ -72,6 +72,7 @@ class Action:
             new_board[self.to_loc] = new_board[self.from_loc]
         new_board[self.from_loc] = None
 
+        # Makes sure to update piece list in board
         new_board.pieces[self.piece_index] = self.to_loc
 
         return new_board

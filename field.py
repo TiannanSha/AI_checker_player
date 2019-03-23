@@ -8,24 +8,30 @@ class Field:
 
     @staticmethod
     def is_on(loc):
+        """Checks if position is on the field"""
+
+        # Requires a tuple of form (q, r)
         if type(loc) != tuple or len(loc) != 2:
             raise KeyError("Function requires 2-tuple")
 
         return loc[0] in Field.RAN and loc[1] in Field.RAN and -loc[0]-loc[1] in Field.RAN
 
     def __init__(self, field=None):
+        """Init field to NONE or copy if a `field` is passed in"""
         if field is None:
             self.cells = [[None for _i in range(Field.SIZE*2 + 1)] for _j in range(Field.SIZE*2 + 1)]
         else:
             self.cells = deepcopy(field.cells)
 
     def __getitem__(self, item):
+        """Returns cell value at (q, r)"""
         if not Field.is_on(item):
             raise IndexError("Location not on board")
 
         return self.cells[item[0] + Field.SIZE][item[1] + Field.SIZE]
 
     def __setitem__(self, item, value):
+        """Sets cell value at (q, r)"""
         if not Field.is_on(item):
             raise IndexError("Location not on board")
 

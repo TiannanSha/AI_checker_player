@@ -31,6 +31,7 @@ class Board(Field):
         return board
 
     def __init__(self, board=None):
+        # Copy board properties if given
         super().__init__(board)
         if board is not None:
             self.colour = board.colour
@@ -38,4 +39,5 @@ class Board(Field):
             self.pieces = board.pieces.copy()
 
     def get_locations(self):
+        # Return location of pieces
         return self.pieces.copy()
