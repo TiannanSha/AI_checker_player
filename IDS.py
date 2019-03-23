@@ -59,8 +59,6 @@ class IterDeepSearch:
         if h+depth > self.iter_depth:
             return False
 
-        self.expanded += 1  # DEBUG
-
         # Track boards gone through in this branch
         self.branch[depth] = node
 
@@ -71,6 +69,7 @@ class IterDeepSearch:
                 action_list += Action.actions(node, pos)
 
         # Generate child for all actions
+        self.expanded += 1  # DEBUG
         for action in action_list:
             child = action.apply_to(node)
 
