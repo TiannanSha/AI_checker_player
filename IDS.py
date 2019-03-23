@@ -14,6 +14,7 @@ class IterDeepSearch:
     def start(root, debug=False):
         # Init IDS
         ids = IterDeepSearch(Heuristic(root))
+        if debug: ids.heuristic.map.print("DEBUG [Heuristic Map]")
 
         # Initial max depth set to heuristic of root
         ids.iter_depth = ids.heuristic(root)
@@ -30,10 +31,7 @@ class IterDeepSearch:
             # Search
             found_path = ids.recurse(root, 0, piece_states)
 
-            # DEBUG
-            if debug:
-                print("# DEBUG [Current Depth : Expanded | Generated] ",
-                        ids.iter_depth, ":", ids.expanded, "|", ids.generated)
+            if debug: print("# DEBUG [Depth: Exp/Gen] {}: {}/{}".format(ids.iter_depth, ids.expanded, ids.generated))
 
             # Increment max depth to search
             ids.iter_depth += 1

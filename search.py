@@ -14,7 +14,7 @@ from IDS import *
 
 
 def main():
-    DEBUG = False
+    DEBUG = True
     if DEBUG: st = time.time()
 
     # Read JSON from file and interpret data
