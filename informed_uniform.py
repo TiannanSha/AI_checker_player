@@ -25,6 +25,7 @@ class InformedUniform:
     def start(root, debug=False):
         # Init IU
         iu = InformedUniform(Heuristic(root))
+        if debug: iu.heuristic.map.print("DEBUG [Heuristic Map]")
         heappush(iu.heap, HeapNode(root, iu.heuristic(root), 0, None, None))
 
         # Main Loop
