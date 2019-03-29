@@ -15,7 +15,8 @@ class IterDeepSearch:
         # Init IDS
         ids = IterDeepSearch(Heuristic(root))
         if debug:
-            ids.heuristic.map.print("DEBUG [Heuristic Map]")
+            Field.print(ids.heuristic.map, "DEBUG [Heuristic Map]")
+            Field.print(ids.heuristic.over_map, "DEBUG [Over Heuristic]")
 
         # Initial max depth set to heuristic of root
         ids.iter_depth = ids.heuristic(root)
@@ -27,7 +28,7 @@ class IterDeepSearch:
             ids.branch = [None] * ids.iter_depth
 
             # Clean variable used for branch culling
-            piece_states = [States.STILL] * len(root.get_locations())
+            piece_states = [States.STILL] * len(root.pieces)
 
             # Search
             found_path = ids.recurse(root, 0, piece_states)
@@ -64,7 +65,7 @@ class IterDeepSearch:
 
         # Get actions for all non stopped pieces
         action_list = []
-        for ind, pos in enumerate(node.get_locations()):
+        for ind, pos in enumerate(node.pieces):
             if piece_states[ind] != States.STOPPED and pos is not None:
                 action_list += Action.actions(node, pos)
 

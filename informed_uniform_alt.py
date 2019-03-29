@@ -3,35 +3,19 @@ from heuristic import *
 from heapq import *
 
 
-class HeapNode:
-
-    def __init__(self, board, heuristic, depth, parent, action):
-        self.board = board
-        self.h = heuristic
-        self.g = depth
-        self.f = self.g + self.h(board)
-        self.par = parent
-        self.act = action
-
-    def __lt__(self, other):
-        if self.f == other.f:
-            return self.h.over_estimate(self.board) < self.h.over_estimate(other.board)
-        return self.f < other.f
-
-
-class InformedUniform:
+class InformedUniformAlt:
 
     @staticmethod
     def start(root, debug=False):
         # Init IU
-        iu = InformedUniform(Heuristic(root))
+        iu = InformedUniformAlt(Heuristic(root))
         if debug:
             Field.print(iu.heuristic.map, "DEBUG [Heuristic Map]")
             Field.print(iu.heuristic.over_map, "DEBUG [Over Heuristic]")
 
         # Main Loop
         node = None
-        heappush(iu.heap, HeapNode(root, iu.heuristic, 0, None, None))
+        heappush(iu.heap, iu.node_tuple(root, 0, None, None))
         while len(iu.heap):
             node = heappop(iu.heap)
             if iu.add_children(node):
@@ -39,9 +23,10 @@ class InformedUniform:
 
         # Extract path
         path = []
-        while node.par is not None:
-            path.append(node.act)
-            node = node.par
+        par, act = node[4:6]
+        while par is not None:
+            path.append(act)
+            par, act = iu.history[par]
 
         if debug:
             print("# DEBUG [Length: Exp|Gen] {}: {}|{}".format(len(path), iu.expanded, iu.generated))
@@ -49,25 +34,28 @@ class InformedUniform:
         return reversed(path)
 
     def __init__(self, heuristic):
-        self.history = set()
+        self.history = {}
         self.heap = []
         self.heuristic = heuristic
-        self.generated = 0  # DEBUG
-        self.expanded = 0  # DEBUG
+        self.generated = 0
+        self.expanded = 0
 
     def add_children(self, node):
-        board = node.board
+        _f, _o, _g, depth, parent, action, board = node
+        board_id = frozenset(board.pieces)
 
         # Goal Reached
         h = self.heuristic(board)
         if h == 0:
             return True
 
-        if frozenset(board.pieces) in self.history:
+        # Check if node already expanded
+        if board_id in self.history:
             return False
 
-        # Track boards gone through in this branch
-        self.history.add(frozenset(board.pieces))
+        # Track boards expanded
+        self.expanded += 1
+        self.history[board_id] = (parent, action)
 
         # Get actions
         action_list = []
@@ -76,7 +64,6 @@ class InformedUniform:
                 action_list += Action.actions(board, pos)
 
         # Generate child for all actions
-        self.expanded += 1  # DEBUG
         for action in action_list:
             # Pieces never move backwards in optimal solutions
             if action.type != MoveType.EXIT:
@@ -89,4 +76,9 @@ class InformedUniform:
                 continue
 
             self.generated += 1  # DEBUG
-            heappush(self.heap, HeapNode(child, self.heuristic, node.g+1, node, action))
+            heappush(self.heap, self.node_tuple(child, depth+1, board_id, action))
+
+    def node_tuple(self, board, g, par, act):
+        f = self.heuristic(board) + g
+        over_h = self.heuristic.over_estimate(board)
+        return f, over_h, -self.generated, g, par, act, board

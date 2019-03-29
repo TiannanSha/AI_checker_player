@@ -20,7 +20,7 @@ class Action:
         for d in Field.DIRS:
             # Moves
             pos = (piece[0] + d[0], piece[1] + d[1])
-            if not Board.is_on(pos):
+            if not Field.is_on(pos):
                 continue
             if board[pos] is None:
                 actions.append(Action(board, piece, pos))
@@ -28,7 +28,7 @@ class Action:
 
             # Jumps
             pos = (piece[0] + 2*d[0], piece[1] + 2*d[1])
-            if not Board.is_on(pos):
+            if not Field.is_on(pos):
                 continue
             if board[pos] is None:
                 actions.append(Action(board, piece, pos))
@@ -66,13 +66,4 @@ class Action:
 
     def apply_to(self, board):
         # Leaves the original board unmodified and returns a modified version after applying the action
-        new_board = Board(board)
-
-        if self.to_loc is not None:
-            new_board[self.to_loc] = new_board[self.from_loc]
-        new_board[self.from_loc] = None
-
-        # Makes sure to update piece list in board
-        new_board.pieces[self.piece_index] = self.to_loc
-
-        return new_board
+        return board.move(self.piece_index, self.to_loc)

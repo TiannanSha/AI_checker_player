@@ -16,28 +16,8 @@ class Field:
 
         return loc[0] in Field.RAN and loc[1] in Field.RAN and -loc[0]-loc[1] in Field.RAN
 
-    def __init__(self, field=None):
-        """Init field to NONE or copy if a `field` is passed in"""
-        if field is None:
-            self.cells = [[None for _i in range(Field.SIZE*2 + 1)] for _j in range(Field.SIZE*2 + 1)]
-        else:
-            self.cells = deepcopy(field.cells)
-
-    def __getitem__(self, item):
-        """Returns cell value at (q, r)"""
-        if not Field.is_on(item):
-            raise IndexError("Location not on board")
-
-        return self.cells[item[0] + Field.SIZE][item[1] + Field.SIZE]
-
-    def __setitem__(self, item, value):
-        """Sets cell value at (q, r)"""
-        if not Field.is_on(item):
-            raise IndexError("Location not on board")
-
-        self.cells[item[0] + Field.SIZE][item[1] + Field.SIZE] = value
-
-    def print(self, message="", debug=False, **kwargs):
+    @staticmethod
+    def print(source, message="", debug=False, **kwargs):
         """
         Helper function to print a drawing of a hexagonal board's contents.
 
@@ -109,10 +89,10 @@ class Field:
         # prepare the provided board contents as strings, formatted to size.
         cells = []
         for qr in [(q, r) for q in Field.RAN for r in Field.RAN if -q - r in Field.RAN]:
-            if type(self[qr]) == int:
-                cell = str(self[qr]).center(5)
-            elif self[qr] is not None:
-                cell = str(col_list[self[qr].value]).center(5)
+            if type(source[qr]) == int:
+                cell = str(source[qr]).center(5)
+            elif source[qr] is not None:
+                cell = str(col_list[source[qr].value]).center(5)
             else:
                 cell = "".center(5)
 
@@ -121,3 +101,24 @@ class Field:
         # fill in the template to create the board drawing, then print!
         board = template.format(message, *cells)
         print(board, **kwargs)
+
+    def __init__(self, field=None):
+        """Init field to NONE or copy if a `field` is passed in"""
+        if field is None:
+            self.cells = [[None for _i in range(Field.SIZE*2 + 1)] for _j in range(Field.SIZE*2 + 1)]
+        else:
+            self.cells = deepcopy(field.cells)
+
+    def __getitem__(self, item):
+        """Returns cell value at (q, r)"""
+        if not Field.is_on(item):
+            raise IndexError("Location not on board")
+
+        return self.cells[item[0] + Field.SIZE][item[1] + Field.SIZE]
+
+    def __setitem__(self, item, value):
+        """Sets cell value at (q, r)"""
+        if not Field.is_on(item):
+            raise IndexError("Location not on board")
+
+        self.cells[item[0] + Field.SIZE][item[1] + Field.SIZE] = value
