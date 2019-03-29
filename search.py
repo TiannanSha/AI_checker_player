@@ -14,7 +14,7 @@ from informed_uniform_alt import *
 
 
 def main():
-    debug = True
+    debug = False
     st = time.time()
 
     # Read JSON from file and interpret data
