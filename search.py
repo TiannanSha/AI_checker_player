@@ -9,12 +9,12 @@ import time
 import sys
 import json
 # from IDS import *
-from informed_uniform_alt import *
 # from informed_uniform import *
+from informed_uniform_alt import *
 
 
 def main():
-    debug = False
+    debug = True
     st = time.time()
 
     # Read JSON from file and interpret data
@@ -32,7 +32,6 @@ def main():
         if debug:
             board = action.apply_to(board)
             Field.print(board, "DEBUG".center(43))
-
     if debug:
         print("# TIME: %.4f" % (time.time() - st))
 
