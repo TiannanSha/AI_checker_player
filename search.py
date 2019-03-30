@@ -10,7 +10,7 @@ import sys
 import json
 # from IDS import *
 # from informed_uniform import *
-from informed_uniform_alt import *
+from astar import *
 
 
 def main():
@@ -23,7 +23,7 @@ def main():
     board = Board.from_json(data)
 
     # Find and print path
-    path = InformedUniformAlt.start(board, debug=debug)
+    path = AStar.start(board, debug=debug)
 
     if debug:
         Field.print(board, "START".center(43))

@@ -3,12 +3,12 @@ from heuristic import *
 from heapq import *
 
 
-class InformedUniformAlt:
+class AStar:
 
     @staticmethod
     def start(root, debug=False):
         # Init IU
-        iu = InformedUniformAlt(Heuristic(root))
+        iu = AStar(Heuristic(root))
         if debug:
             Field.print(iu.heuristic.map, "DEBUG [Heuristic Map]")
             Field.print(iu.heuristic.over_map, "DEBUG [Over Heuristic]")
