@@ -61,6 +61,7 @@ class Heuristic:
                 flood_list.append((pos, dist + 1))
 
     def over_estimate(self, board):
+        """Used to determine if a piece is moving backwards and break heuristic ties"""
         return sum((self.over_map[loc] for loc in board.pieces if loc is not None))
 
     def __call__(self, board):

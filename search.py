@@ -9,7 +9,6 @@ import time
 import sys
 import json
 # from IDS import *
-# from informed_uniform import *
 from astar import *
 
 
